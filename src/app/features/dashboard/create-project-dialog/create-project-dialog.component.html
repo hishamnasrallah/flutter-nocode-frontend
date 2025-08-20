@@ -86,7 +86,7 @@
             formControlName="theme"
             class="form-control"
             [class.is-invalid]="isFieldInvalid('theme')">
-            <option value="">Select a theme</option>
+            <option [ngValue]="null">Select a theme</option>
             <option
               *ngFor="let theme of availableThemes"
               [value]="theme.id">
