@@ -62,13 +62,20 @@ export class CreateProjectDialogComponent implements OnInit {
       if (this.availableThemes.length > 0) {
         // Find a default theme, e.g., the first one, or one named "Material Blue"
         const defaultTheme = this.availableThemes.find(t => t.name === 'Material Blue') || this.availableThemes[0];
-        this.projectForm.patchValue({ theme: defaultTheme.id }); // Set the theme ID in the form
+        // Ensure the defaultTheme and its id are valid before setting
+        if (defaultTheme && defaultTheme.id != null) {
+          this.projectForm.patchValue({ theme: defaultTheme.id }); // Set the theme ID in the form
+        } else {
+          this.projectForm.patchValue({ theme: null }); // Explicitly set to null if no valid theme
+        }
       } else {
+        this.projectForm.patchValue({ theme: null }); // Explicitly set to null if no themes available
         this.notificationService.warning('No themes available. Please create one first.');
       }
     },
     error: (err) => {
       console.error('Failed to load themes:', err);
+      this.projectForm.patchValue({ theme: null }); // Explicitly set to null on error
       this.notificationService.error('Failed to load themes for project creation.');
     }
   });
