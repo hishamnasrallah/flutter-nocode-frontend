@@ -77,6 +77,29 @@
             {{ getFieldError('package_name') }}
           </div>
         </div>
+
+        <!-- Theme Selection -->
+        <div class="form-group">
+          <label for="theme">Theme *</label>
+          <select
+            id="theme"
+            formControlName="theme"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('theme')">
+            <option value="">Select a theme</option>
+            <option
+              *ngFor="let theme of availableThemes"
+              [value]="theme.id">
+              {{ theme.name }}
+            </option>
+          </select>
+          <div class="field-hint">
+            Choose a theme for your app's visual styling
+          </div>
+          <div class="field-error" *ngIf="isFieldInvalid('theme')">
+            {{ getFieldError('theme') }}
+          </div>
+        </div>
       </form>
     </div>
 
