@@ -192,7 +192,8 @@ export class CreateProjectDialogComponent implements OnInit {
     const labels: { [key: string]: string } = {
       'name': 'Project Name',
       'description': 'Description',
-      'package_name': 'Package Name'
+      'package_name': 'Package Name',
+      'theme': 'Theme'
     };
 
     return labels[fieldName] || fieldName;
