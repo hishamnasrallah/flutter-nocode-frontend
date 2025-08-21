@@ -93,6 +93,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log('Dashboard: Component initialized');
     this.loadUser();
     this.loadApplications();
   }
@@ -103,20 +104,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private loadUser(): void {
+    console.log('Dashboard: Loading user data');
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
+        console.log('Dashboard: User loaded:', user?.username);
         this.currentUser = user;
       });
   }
 
   private loadApplications(): void {
+    console.log('Dashboard: Loading applications');
     this.isLoading = true;
 
     this.applicationService.getApplications()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          console.log('Dashboard: Applications loaded:', response.results.length);
           this.applications = response.results;
           this.filteredApplications = [...this.applications];
           this.updateStats();
@@ -130,7 +135,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Failed to load applications:', error);
+          console.error('Dashboard: Failed to load applications:', error);
           this.notificationService.error('Failed to load applications');
           this.isLoading = false;
         }

@@ -15,6 +15,11 @@ export class ConfigGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
+    // Allow access to configuration page without being configured
+    if (state.url === '/configuration') {
+      return true;
+    }
+
     if (this.configService.isConfigured()) {
       return true;
     }

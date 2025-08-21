@@ -36,21 +36,22 @@ export class ConfigurationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('Configuration: Component initialized');
     // Check if already configured
     this.isConfigured = this.configService.isConfigured();
+    console.log('Configuration: Is configured?', this.isConfigured);
 
     if (this.isConfigured) {
       const currentUrl = this.configService.getBackendUrl();
       this.configForm.patchValue({ backendUrl: currentUrl });
       this.lastTestedUrl = currentUrl;
 
-      // Auto-redirect to login if configured
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 1000);
+      // Don't auto-redirect, let user choose when to continue
+      console.log('Configuration: Already configured, showing continue option');
     } else {
       // Set default URL
       this.configForm.patchValue({ backendUrl: this.defaultUrl });
+      console.log('Configuration: Not configured, showing setup form');
     }
   }
 

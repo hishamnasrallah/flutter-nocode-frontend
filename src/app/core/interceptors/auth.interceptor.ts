@@ -24,6 +24,8 @@ export const authInterceptor: HttpInterceptorFn = (
   const AUTH_ENDPOINTS = ['/api/auth/login/', '/api/auth/register/', '/api/auth/refresh/', '/api/auth/logout/'];
   const isAuthEndpoint = AUTH_ENDPOINTS.some(endpoint => req.url.includes(endpoint));
 
+  console.log('AuthInterceptor: Processing request to:', req.url, 'Is auth endpoint:', isAuthEndpoint);
+
   // Skip interceptor for certain requests (already existing logic)
   if (req.headers.has('Skip-Interceptor')) {
     const newReq = req.clone({
@@ -37,6 +39,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   // Only add auth token if available AND it's not an auth endpoint AND the request doesn't already have one
   if (token && !isAuthEndpoint && !req.headers.has('Authorization')) {
+    console.log('AuthInterceptor: Adding auth token to request');
     authReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
@@ -44,14 +47,17 @@ export const authInterceptor: HttpInterceptorFn = (
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
+      console.log('AuthInterceptor: HTTP Error:', error.status, 'for URL:', req.url);
       // The refresh token logic should only apply to 401s on *protected* endpoints, not auth endpoints
       if (error.status === 401 && !isAuthEndpoint) { // Changed condition here
+        console.log('AuthInterceptor: 401 error on protected endpoint, attempting token refresh');
         if (!isRefreshing) {
           isRefreshing = true;
           refreshTokenSubject.next(null);
 
           return authService.refreshToken().pipe(
             switchMap((response) => {
+              console.log('AuthInterceptor: Token refresh successful');
               isRefreshing = false;
               refreshTokenSubject.next(response.access);
 
@@ -62,6 +68,7 @@ export const authInterceptor: HttpInterceptorFn = (
               return next(newAuthReq);
             }),
             catchError((refreshError) => {
+              console.log('AuthInterceptor: Token refresh failed, logging out');
               isRefreshing = false;
               authService.logout();
               return throwError(() => refreshError);

@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { getLoadingService } from './core/interceptors/loading.interceptor';
 import { NotificationService } from './core/services/notification.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -19,10 +21,18 @@ export class AppComponent implements OnInit {
   notifications: any[] = [];
 
   constructor(
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Add router event logging to debug navigation issues
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      console.log('Navigation completed to:', event.url);
+    });
+
     // Subscribe to notifications
     this.notificationService.notification$.subscribe(notification => {
       this.notifications.push(notification);

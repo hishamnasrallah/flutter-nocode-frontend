@@ -122,11 +122,17 @@ export class AuthService {
   }
 
   private clearAuthData(): void {
+    console.log('AuthService: Clearing auth data and redirecting to login');
     this.config.clearTokens();
     localStorage.removeItem('current_user');
     this.currentUserSubject.next(null);
     this.stopTokenRefreshTimer();
-    this.router.navigate(['/login']);
+    
+    // Only redirect to login if we're not already on an auth page
+    const currentUrl = this.router.url;
+    if (!currentUrl.includes('/login') && !currentUrl.includes('/register') && !currentUrl.includes('/configuration')) {
+      this.router.navigate(['/login']);
+    }
   }
 
   refreshToken(): Observable<RefreshTokenResponse> {
@@ -172,18 +178,23 @@ export class AuthService {
 
   // Auto-login check on app initialization
   checkAuthStatus(): Observable<boolean> {
+    console.log('AuthService: Checking auth status...');
     const token = this.config.getAccessToken();
 
     if (!token) {
+      console.log('AuthService: No access token found');
       return new Observable(observer => {
         observer.next(false);
         observer.complete();
       });
     }
 
+    console.log('AuthService: Access token found, validating with server...');
     return this.getProfile().pipe(
       map(() => true),
+        console.log('AuthService: Profile retrieved successfully');
       catchError(() => {
+        console.log('AuthService: Profile retrieval failed, clearing auth data');
         this.clearAuthData();
         return new Observable<boolean>(observer => { // Explicitly type the Observable
           observer.next(false);

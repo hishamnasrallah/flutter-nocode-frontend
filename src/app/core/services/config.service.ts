@@ -16,7 +16,9 @@ export class ConfigService {
   // Check if backend is configured
   isConfigured(): boolean {
     const config = localStorage.getItem(this.CONFIG_KEY);
-    return config !== null && config !== '';
+    const isConfigured = config !== null && config !== '';
+    console.log('ConfigService: Backend configured?', isConfigured, 'URL:', config);
+    return isConfigured;
   }
 
   // Get current backend URL

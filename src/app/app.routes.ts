@@ -7,7 +7,7 @@ import { ConfigGuard } from './core/guards/config.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/configuration',
+    redirectTo: '/dashboard',
     pathMatch: 'full'
   },
   {
@@ -19,13 +19,11 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./features/auth/login/login.component')
       .then(m => m.LoginComponent),
-    canActivate: [ConfigGuard]
   },
   {
     path: 'register',
     loadComponent: () => import('./features/auth/register/register.component')
       .then(m => m.RegisterComponent),
-    canActivate: [ConfigGuard]
   },
   {
     path: 'dashboard',
@@ -71,6 +69,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/configuration'
+    redirectTo: '/dashboard'
   }
 ];
