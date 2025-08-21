@@ -191,11 +191,13 @@ export class AuthService {
 
     console.log('AuthService: Access token found, validating with server...');
     return this.getProfile().pipe(
-      map(() => true),
+      map(() => {
         console.log('AuthService: Profile retrieved successfully');
         return true;
       }),
+      tap(() => {
         console.log('AuthService: Profile retrieved successfully');
+      }),
       catchError((error) => {
         console.log('AuthService: Profile retrieval failed, clearing auth data');
         console.error('Profile error:', error);
