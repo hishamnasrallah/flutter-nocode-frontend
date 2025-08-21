@@ -94,6 +94,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Dashboard: Component initialized');
+    
+    // Check if we should be here
+    if (!this.authService.isAuthenticated()) {
+      console.log('Dashboard: User not authenticated, should not be here');
+      this.router.navigate(['/login']);
+      return;
+    }
+    
     this.loadUser();
     this.loadApplications();
   }

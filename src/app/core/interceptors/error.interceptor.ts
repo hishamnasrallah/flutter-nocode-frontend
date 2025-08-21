@@ -18,6 +18,7 @@ export const errorInterceptor: HttpInterceptorFn = (
     catchError((error: HttpErrorResponse) => {
       // Don't show notifications for auth endpoints (they handle their own errors)
       const skipNotification = req.url.includes('/auth/') ||
+                              req.url.includes('/health/') ||
                               req.headers.has('Skip-Error-Notification');
 
       if (!skipNotification) {
@@ -31,6 +32,10 @@ export const errorInterceptor: HttpInterceptorFn = (
                 error.error?.detail || error.error?.message || 'Invalid request'
               );
             }
+            break;
+
+          case 401:
+            // Unauthorized - don't show notification as auth interceptor handles this
             break;
 
           case 403:

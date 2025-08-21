@@ -37,6 +37,19 @@ export class ConfigurationComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Configuration: Component initialized');
+    
+    // If user is already authenticated and configured, redirect to dashboard
+    if (this.configService.isConfigured()) {
+      console.log('Configuration: Already configured, checking if should redirect');
+      // Only auto-redirect if user came here directly, not if they're changing config
+      const navigation = this.router.getCurrentNavigation();
+      if (!navigation?.previousNavigation) {
+        console.log('Configuration: Auto-redirecting to dashboard');
+        this.router.navigate(['/dashboard']);
+        return;
+      }
+    }
+    
     // Check if already configured
     this.isConfigured = this.configService.isConfigured();
     console.log('Configuration: Is configured?', this.isConfigured);

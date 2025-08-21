@@ -35,7 +35,9 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Check if already authenticated
     if (this.authService.isAuthenticated()) {
+      console.log('Login: User already authenticated, redirecting to dashboard');
       this.router.navigate(['/dashboard']);
+      return;
     }
 
     // Check for stored credentials (if remember me was checked)

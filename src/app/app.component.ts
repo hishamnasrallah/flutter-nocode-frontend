@@ -30,7 +30,22 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      console.log('Navigation completed to:', event.url);
+      console.log('🛣️ Navigation completed to:', event.url);
+      
+      // Track navigation history for debugging
+      const history = JSON.parse(sessionStorage.getItem('navigation_history') || '[]');
+      history.push({
+        url: event.url,
+        timestamp: Date.now(),
+        id: event.id
+      });
+      
+      // Keep only last 10 entries
+      if (history.length > 10) {
+        history.shift();
+      }
+      
+      sessionStorage.setItem('navigation_history', JSON.stringify(history));
     });
 
     // Subscribe to notifications

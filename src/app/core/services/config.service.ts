@@ -44,12 +44,22 @@ export class ConfigService {
     // Remove trailing slash
     url = url.replace(/\/$/, '');
 
+    console.log('ConfigService: Testing connection to:', url);
     return this.http.get(`${url}/health/`, {
       responseType: 'text',
-      headers: { 'Skip-Interceptor': 'true' }
+      headers: { 
+        'Skip-Interceptor': 'true',
+        'Skip-Error-Notification': 'true'
+      }
     }).pipe(
-      map(() => true),
-      catchError(() => of(false))
+      map(() => {
+        console.log('ConfigService: Connection test successful');
+        return true;
+      }),
+      catchError((error) => {
+        console.log('ConfigService: Connection test failed:', error);
+        return of(false);
+      })
     );
   }
 

@@ -21,15 +21,15 @@ export const authInterceptor: HttpInterceptorFn = (
 
   // Define endpoints that should NOT have an Authorization header
   // These are typically authentication endpoints themselves
-  const AUTH_ENDPOINTS = ['/api/auth/login/', '/api/auth/register/', '/api/auth/refresh/', '/api/auth/logout/'];
+  const AUTH_ENDPOINTS = ['/api/auth/login/', '/api/auth/register/', '/api/auth/refresh/', '/api/auth/logout/', '/health/'];
   const isAuthEndpoint = AUTH_ENDPOINTS.some(endpoint => req.url.includes(endpoint));
 
   console.log('AuthInterceptor: Processing request to:', req.url, 'Is auth endpoint:', isAuthEndpoint);
 
   // Skip interceptor for certain requests (already existing logic)
-  if (req.headers.has('Skip-Interceptor')) {
+  if (req.headers.has('Skip-Interceptor') || req.headers.has('Skip-Error-Notification')) {
     const newReq = req.clone({
-      headers: req.headers.delete('Skip-Interceptor')
+      headers: req.headers.delete('Skip-Interceptor').delete('Skip-Error-Notification')
     });
     return next(newReq);
   }

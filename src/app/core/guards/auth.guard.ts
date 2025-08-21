@@ -19,6 +19,13 @@ export class AuthGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
     console.log('AuthGuard: Checking authentication for route:', state.url);
     
+    // Allow access to auth pages without authentication
+    const authPages = ['/login', '/register', '/configuration'];
+    if (authPages.includes(state.url)) {
+      console.log('AuthGuard: Allowing access to auth page:', state.url);
+      return true;
+    }
+    
     if (this.authService.isAuthenticated()) {
       console.log('AuthGuard: User is authenticated');
       return true;
@@ -35,7 +42,9 @@ export class AuthGuard implements CanActivate {
         } else {
           console.log('AuthGuard: No valid session, redirecting to login');
           // Store the attempted URL for redirecting
-          localStorage.setItem('redirectUrl', state.url);
+          if (state.url !== '/dashboard') {
+            localStorage.setItem('redirectUrl', state.url);
+          }
           this.router.navigate(['/login']);
           return false;
         }

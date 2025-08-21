@@ -193,8 +193,12 @@ export class AuthService {
     return this.getProfile().pipe(
       map(() => true),
         console.log('AuthService: Profile retrieved successfully');
-      catchError(() => {
+        return true;
+      }),
+        console.log('AuthService: Profile retrieved successfully');
+      catchError((error) => {
         console.log('AuthService: Profile retrieval failed, clearing auth data');
+        console.error('Profile error:', error);
         this.clearAuthData();
         return new Observable<boolean>(observer => { // Explicitly type the Observable
           observer.next(false);
@@ -202,6 +206,5 @@ export class AuthService {
         });
       })
     );
-
   }
 }
